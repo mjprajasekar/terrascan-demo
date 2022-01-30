@@ -17,3 +17,11 @@ tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz
 install terrascan /usr/local/bin && rm terrascan
 terrascan
 ```
+
+# Check main.tf in server mode
+`curl -i -F "file=@main.tf" localhost:9010/v1/terraform/v14/aws/local/file/scan`
+
+# Additional Resources
+[Terrascan Github Action](https://github.com/marketplace/actions/terrascan-iac-scanner)
+[Pre-commit framework](https://pre-commit.com/#install)
+[Terrascan Server Mode](https://runterrascan.io/docs/usage/server_mode/)

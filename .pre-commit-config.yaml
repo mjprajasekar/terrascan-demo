@@ -1,5 +1,5 @@
 repos:
-    - repo: https://github.com/accurics/terrascan
-        rev: <COMMIT/VERSION>  
-        hooks:
-        - id: terraform-pre-commit
+  - repo: https://github.com/accurics/terrascan
+    rev: v1.13.0 # Get the latest from: https://github.com/accurics/terrascan/releases
+    hooks:
+    - id: terraform-pre-commit

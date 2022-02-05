@@ -22,6 +22,6 @@ terrascan
 `curl -i -F "file=@main.tf" localhost:9010/v1/terraform/v14/aws/local/file/scan`
 
 # Additional Resources
-[Terrascan Github Action](https://github.com/marketplace/actions/terrascan-iac-scanner)
-[Pre-commit framework](https://pre-commit.com/#install)
-[Terrascan Server Mode](https://runterrascan.io/docs/usage/server_mode/)
+- [Terrascan Github Action](https://github.com/marketplace/actions/terrascan-iac-scanner)
+- [Pre-commit framework](https://pre-commit.com/#install)
+- [Terrascan Server Mode](https://runterrascan.io/docs/usage/server_mode/)

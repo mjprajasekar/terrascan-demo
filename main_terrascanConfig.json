@@ -1,0 +1,61 @@
+{
+	"terrascanConfig": {
+		"aws_s3_bucket": [
+			{
+				"id": "aws_s3_bucket.demo_bucket",
+				"name": "demo_bucket",
+				"module_name": "root",
+				"source": "main.tf",
+				"line": 7,
+				"type": "aws_s3_bucket",
+				"config": {
+					"acl": "private",
+					"bucket": "demo-bucket-${data.aws_caller_identity.current.account_id}",
+					"force_destroy": true,
+					"server_side_encryption_configuration": [
+						{
+							"rule": [
+								{
+									"apply_server_side_encryption_by_default": [
+										{
+											"kms_master_key_id": "${data.aws_kms_key.aws_s3_key.arn}",
+											"sse_algorithm": "aws:kms"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"skip_rules": null,
+				"max_severity": "",
+				"min_severity": ""
+			}
+		],
+		"aws_s3_bucket_public_access_block": [
+			{
+				"id": "aws_s3_bucket_public_access_block.block_public_access",
+				"name": "block_public_access",
+				"module_name": "root",
+				"source": "main.tf",
+				"line": 22,
+				"type": "aws_s3_bucket_public_access_block",
+				"config": {
+					"block_public_acls": true,
+					"block_public_policy": true,
+					"bucket": "${aws_s3_bucket.demo_bucket.id}",
+					"ignore_public_acls": true,
+					"restrict_public_buckets": true
+				},
+				"skip_rules": null,
+				"max_severity": "",
+				"min_severity": ""
+			}
+		]
+	},
+	"iacMetadata": {
+		"iacType": "terraform",
+		"iacPath": "terrascan-demo/main.tf",
+		"providerType": "AWS"
+	}
+}

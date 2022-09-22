@@ -1,9 +1,9 @@
-resource "google_service_account" "default" {
+resource "google_service_account" "test1" {
   account_id   = "service_account_id"
   display_name = "Service Account"
 }
 
-resource "google_compute_instance" "default" {
+resource "google_compute_instance" "test1" {
   name         = "test"
   machine_type = "e2-medium"
   zone         = "us-central1-a"
@@ -22,7 +22,7 @@ resource "google_compute_instance" "default" {
   }
 
   network_interface {
-    network = "default"
+    network = "test1"
 
     access_config {
       // Ephemeral public IP
@@ -37,7 +37,7 @@ resource "google_compute_instance" "default" {
 
   service_account {
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    email  = google_service_account.default.email
+    email  = google_service_account.test1.email
     scopes = ["cloud-platform"]
   }
 }

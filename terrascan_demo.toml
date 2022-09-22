@@ -11,5 +11,5 @@
     skip-rules = [
         "AWS.S3Bucket.DS.High.1043",
         "AWS.S3Bucket.IAM.High.0370",
-        "accurics.gcp.NS.125",
+        "AC_GCP_0041",
     ]

@@ -1,4 +1,5 @@
 resource "google_service_account" "test1" {
+  ts:skip=accurics.gcp.NS.125 need to skip this rule
   account_id   = "service_account_id"
   display_name = "Service Account"
 }

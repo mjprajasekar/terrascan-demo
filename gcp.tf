@@ -1,5 +1,5 @@
 resource "google_service_account" "test1" {
-  ts:skip=AC_GCP_0041 need to skip this rule
+  ts:skip="AC_GCP_0041" need to skip this rule
   account_id   = "service_account_id"
   display_name = "Service Account"
 }

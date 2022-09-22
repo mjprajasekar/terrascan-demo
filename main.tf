@@ -1,29 +1,43 @@
-data "aws_caller_identity" "current" {}
-
-data "aws_kms_key" "aws_s3_key" {
-  key_id = "alias/aws/s3"
+resource "google_service_account" "default" {
+  account_id   = "service_account_id"
+  display_name = "Service Account"
 }
 
-resource "aws_s3_bucket" "demo_bucket" {
-  bucket        = "demo-bucket-${data.aws_caller_identity.current.account_id}"
-  acl           = "public"
-  force_destroy = flase
+resource "google_compute_instance" "default" {
+  name         = "test"
+  machine_type = "e2-medium"
+  zone         = "us-central1-a"
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = data.aws_kms_key.aws_s3_key.arn
-        sse_algorithm     = "aws:kms"
-      }
+  tags = ["foo", "bar"]
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
     }
   }
-}
 
-resource "aws_s3_bucket_public_access_block" "block_public_access" {
-  bucket = aws_s3_bucket.demo_bucket.id
+  // Local SSD disk
+  scratch_disk {
+    interface = "SCSI"
+  }
 
-  block_public_acls       = true
-  block_public_policy     = true
-  restrict_public_buckets = true
-  ignore_public_acls      = true
+  network_interface {
+    network = "default"
+
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  metadata = {
+    foo = "bar"
+  }
+
+  metadata_startup_script = "echo hi > /test.txt"
+
+  service_account {
+    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+    email  = google_service_account.default.email
+    scopes = ["cloud-platform"]
+  }
 }

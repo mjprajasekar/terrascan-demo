@@ -1,44 +1,62 @@
-resource "google_service_account" "test1" {
-  ts:skip="AC_GCP_0041" need to skip this rule
-  account_id   = "service_account_id"
-  display_name = "Service Account"
-}
+module "vpc" {
+    source  = "terraform-google-modules/network/google"
+    version = "~> 4.0"
 
-resource "google_compute_instance" "test1" {
-  name         = "test"
-  machine_type = "e2-medium"
-  zone         = "us-central1-a"
+    project_id   = "<PROJECT ID>"
+    network_name = "example-vpc"
+    routing_mode = "GLOBAL"
 
-  tags = ["foo", "bar"]
+    subnets = [
+        {
+            subnet_name           = "subnet-01"
+            subnet_ip             = "10.10.10.0/24"
+            subnet_region         = "us-west1"
+        },
+        {
+            subnet_name           = "subnet-02"
+            subnet_ip             = "10.10.20.0/24"
+            subnet_region         = "us-west1"
+            subnet_private_access = "true"
+            subnet_flow_logs      = "true"
+            description           = "This subnet has a description"
+        },
+        {
+            subnet_name               = "subnet-03"
+            subnet_ip                 = "10.10.30.0/24"
+            subnet_region             = "us-west1"
+            subnet_flow_logs          = "true"
+            subnet_flow_logs_interval = "INTERVAL_10_MIN"
+            subnet_flow_logs_sampling = 0.7
+            subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
+        }
+    ]
 
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
+    secondary_ranges = {
+        subnet-01 = [
+            {
+                range_name    = "subnet-01-secondary-01"
+                ip_cidr_range = "192.168.64.0/24"
+            },
+        ]
+
+        subnet-02 = []
     }
-  }
 
-  // Local SSD disk
-  scratch_disk {
-    interface = "SCSI"
-  }
-
-  network_interface {
-    network = "test1"
-
-    access_config {
-      // Ephemeral public IP
-    }
-  }
-
-  metadata = {
-    foo = "bar"
-  }
-
-  metadata_startup_script = "echo hi > /test.txt"
-
-  service_account {
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    email  = google_service_account.test1.email
-    scopes = ["cloud-platform"]
-  }
+    routes = [
+        {
+            name                   = "egress-internet"
+            description            = "route through IGW to access internet"
+            destination_range      = "0.0.0.0/0"
+            tags                   = "egress-inet"
+            next_hop_internet      = "true"
+        },
+        {
+            name                   = "app-proxy"
+            description            = "route through proxy to reach app"
+            destination_range      = "10.50.10.0/24"
+            tags                   = "app-proxy"
+            next_hop_instance      = "app-proxy-instance"
+            next_hop_instance_zone = "us-west1-a"
+        },
+    ]
 }
